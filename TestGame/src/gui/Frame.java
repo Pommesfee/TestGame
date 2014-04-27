@@ -20,14 +20,16 @@ public class Frame extends JFrame {
 	private boolean key_right;
 	
 	private final Player player;
+	private final Background bg;
 	
-	public Frame(Player player) {
+	public Frame(Player player, Background bg) {
 		super("Mein Spiel");
 		screen = new Screen();
 		screen.setBounds(0, 0, 800, 600);
 		add(screen);	
 		addKeyListener(new KeyHandler());
 		this.player = player;
+		this.bg = bg;
 	}
 	
 	public void repaintScreen() {
@@ -55,7 +57,8 @@ public class Frame extends JFrame {
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			g.setColor(Color.RED);
-			g.fillRect(player.getBounding().x, player.getBounding().y, player.getBounding().width, player.getBounding().height);
+			g.drawImage(bg.getLook(), bg.getX(), 0, null);
+			g.drawImage(player.getLook(), player.getBounding().x, player.getBounding().y, null);
 		}
 	}
 	
@@ -77,6 +80,12 @@ public class Frame extends JFrame {
 			}
 			if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				System.exit(0);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_R) {
+				player.setSpeed(player.getSpeed() + 100);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_F) {
+				player.setSpeed(player.getSpeed() - 100);
 			}
 		}
 

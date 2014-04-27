@@ -1,6 +1,10 @@
 package gameobjects;
 
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class Player {
 
@@ -13,8 +17,15 @@ public class Player {
 	private int worldsize_x;
 	private int worldsize_y;
 	
-	public Player(int posx, int posy, int size, int speed, int worldsize_x, int worldsize_y) {
-		bounding = new Rectangle(posx, posy, size, size);
+	private BufferedImage look;
+	
+	public Player(int posx, int posy, int speed, int worldsize_x, int worldsize_y) {
+		try {
+			look = ImageIO.read(getClass().getClassLoader().getResourceAsStream("rsc/raumschiffchen.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		bounding = new Rectangle(posx, posy, look.getWidth(), look.getHeight());
 		this.posx = posx;
 		this.posy = posy;
 		this.speed = speed;
@@ -57,4 +68,15 @@ public class Player {
 		return this.bounding;
 	}
 	
+	public BufferedImage getLook() {
+		return look;
+	}
+
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
+	}
 }

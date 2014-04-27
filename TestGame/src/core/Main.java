@@ -7,17 +7,17 @@ package core;
 import javax.swing.JFrame;
 
 import gameobjects.Player;
+import gui.Background;
 import gui.Frame;
 
 public class Main {
 	
-	// Test 123
-	
 	public static void main(String[] args) {
 		
-		Player player = new Player(400, 300, 50, 300, 800, 600);
+		Player player = new Player(400, 300, 300, 800, 600);
+		Background bg = new Background(500);
 		
-		Frame frame = new Frame(player);
+		Frame frame = new Frame(player, bg);
 		frame.setSize(800, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //		frame.setUndecorated(true);
@@ -39,6 +39,7 @@ public class Main {
 			lastFrame = thisFrame;
 			
 			player.update(timeSinceLastFrame, frame.getUp(), frame.getDown(), frame.getLeft(), frame.getRight());
+			bg.update(timeSinceLastFrame);
 			
 			frame.repaintScreen();
 			
