@@ -21,10 +21,10 @@ public class Background {
 		}
 	}
 	
-	public void update(double timeSinceLastFrame) {
-		posx-= speed*timeSinceLastFrame;
-		if(posx < (-look.getWidth() + 800)) {
-			posx = 0;
+	public void update(double timeSinceLastFrame){
+		posx -= speed*timeSinceLastFrame;
+		if(posx<-look.getWidth()) {
+			posx+=look.getWidth();
 		}
 	}
 	

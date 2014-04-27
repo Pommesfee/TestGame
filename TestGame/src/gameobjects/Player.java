@@ -1,10 +1,14 @@
 package gameobjects;
 
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.List;
 
 import javax.imageio.ImageIO;
+
+import core.Keyboard;
 
 public class Player {
 
@@ -18,8 +22,11 @@ public class Player {
 	private int worldsize_y;
 	
 	private BufferedImage look;
+	private List<Bullet> bullets;
+	private double timeSinceLastShot = 0;
+	private final double shotFrequenzy = 0.1;
 	
-	public Player(int posx, int posy, int speed, int worldsize_x, int worldsize_y) {
+	public Player(int posx, int posy, int speed, int worldsize_x, int worldsize_y, List<Bullet> bullets) {
 		try {
 			look = ImageIO.read(getClass().getClassLoader().getResourceAsStream("rsc/raumschiffchen.png"));
 		} catch (IOException e) {
@@ -31,20 +38,29 @@ public class Player {
 		this.speed = speed;
 		this.worldsize_x = worldsize_x;
 		this.worldsize_y = worldsize_y;
+		this.bullets = bullets; 
 	}
 	
-	public void update(double timeSinceLastframe, boolean up, boolean down, boolean left, boolean right) {
-		if(up) {
+	public void update(double timeSinceLastframe) {
+		timeSinceLastShot += timeSinceLastframe;
+		if(Keyboard.isKeyPressed(KeyEvent.VK_W)) {
 			posy -= speed * timeSinceLastframe;
 		}
-		if(down) {
+		if(Keyboard.isKeyPressed(KeyEvent.VK_S)) {
 			posy += speed * timeSinceLastframe;
 		}
-		if(left) {
+		if(Keyboard.isKeyPressed(KeyEvent.VK_A)) {
 			posx -= speed * timeSinceLastframe;
 		}
-		if(right) {
+		if(Keyboard.isKeyPressed(KeyEvent.VK_D)) {
 			posx += speed * timeSinceLastframe;
+		}
+		
+		if (Keyboard.isKeyPressed(KeyEvent.VK_SPACE)) {
+			if (timeSinceLastShot > shotFrequenzy) {
+				bullets.add(new Bullet((posx + ((this.getBounding().width * 0.5) - (Bullet.getLook().getWidth() * 0.5))), (((posy + this.getBounding().height *0.5 ) - (Bullet.getLook().getHeight() * 0.5))), 500, 0, bullets));
+				timeSinceLastShot = 0;
+			}
 		}
 		
 		if (posx < 0) {
