@@ -15,7 +15,7 @@ public class Main {
 	public static void main(String[] args) {
 		
 		Player player = new Player(400, 300, 300, 800, 600);
-		Background bg = new Background(500);
+		Background bg = new Background(100);
 		
 		Frame frame = new Frame(player, bg);
 		frame.setSize(800, 600);
