@@ -16,20 +16,23 @@ import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.JFrame;
 
 public class Main {
 	
+	private static List<Bullet> bullets = new LinkedList<Bullet>();
+	private static List<Enemy> enemies = new LinkedList<Enemy>();
+	
+	private static Player player = new Player(400, 300, 300, 800, 600, bullets, enemies);
+	private static Background bg = new Background(50);
+	
+	private static Random r = new Random();
+	
 	public static void main(String[] args) {
 		
-		List<Bullet> bullets = new LinkedList<Bullet>();
-		List<Enemy> enemies = new LinkedList<Enemy>();
-		
-		Player player = new Player(400, 300, 300, 800, 600, bullets);
-		Background bg = new Background(100);
-		
-		enemies.add(new Enemy(100, 100));
+		spawnEnemy();
 		
 		Frame frame = new Frame(player, bg, bullets, enemies);
 		frame.setSize(800, 600);
@@ -48,6 +51,9 @@ public class Main {
 //		device.setFullScreenWindow(frame);
 //		device.setDisplayMode(displayMode);
 		
+		final double enemySpawnTime = 1;
+		double timeSinceLastEnemySpawn = 0;
+		
 		long lastFrame = System.currentTimeMillis();
 		while (true) {
 			if (Keyboard.isKeyPressed(KeyEvent.VK_ESCAPE)) {
@@ -64,6 +70,12 @@ public class Main {
 				b.update(timeSinceLastFrame);
 			}
 			
+			timeSinceLastEnemySpawn += timeSinceLastFrame;
+			if (timeSinceLastEnemySpawn >= enemySpawnTime) {
+				timeSinceLastEnemySpawn -= enemySpawnTime;
+				spawnEnemy();
+			}
+			
 			for (int i = 0; i < enemies.size(); i++) {
 				Enemy e = enemies.get(i);
 				e.update(timeSinceLastFrame);
@@ -71,9 +83,12 @@ public class Main {
 			
 			bg.update(timeSinceLastFrame);
 			
-			frame.repaintScreen();
-			
+			frame.repaintScreen();			
 		}
+	}
+	
+	public static void spawnEnemy() {
+		enemies.add(new Enemy(800, r.nextInt(600) - Enemy.getHeight(), bullets));
 	}
 	
 }

@@ -22,13 +22,17 @@ public class Player {
 	private int worldsize_y;
 	
 	private BufferedImage look;
+	private BufferedImage look_dead;
 	private List<Bullet> bullets;
+	private List<Enemy> enemies;
 	private double timeSinceLastShot = 0;
 	private final double shotFrequenzy = 0.1;
+	private boolean alive;
 	
-	public Player(int posx, int posy, int speed, int worldsize_x, int worldsize_y, List<Bullet> bullets) {
+	public Player(int posx, int posy, int speed, int worldsize_x, int worldsize_y, List<Bullet> bullets, List<Enemy> enemies) {
 		try {
 			look = ImageIO.read(getClass().getClassLoader().getResourceAsStream("rsc/raumschiffchen.png"));
+			look_dead = ImageIO.read(getClass().getClassLoader().getResourceAsStream("rsc/raumschiff_kaputt.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -39,9 +43,20 @@ public class Player {
 		this.worldsize_x = worldsize_x;
 		this.worldsize_y = worldsize_y;
 		this.bullets = bullets; 
+		this.enemies = enemies;
+		alive = true;
 	}
 	
 	public void update(double timeSinceLastframe) {
+		
+		if (Keyboard.isKeyPressed(KeyEvent.VK_R)) {
+			alive = true;
+		}
+		
+		if (!alive) {
+			return;
+		}
+		
 		timeSinceLastShot += timeSinceLastframe;
 		if(Keyboard.isKeyPressed(KeyEvent.VK_W)) {
 			posy -= speed * timeSinceLastframe;
@@ -76,6 +91,13 @@ public class Player {
 			posy = worldsize_y - bounding.height;
 		}
 		
+		for (int i = 0; i < enemies.size(); i++) {
+			Enemy e = enemies.get(i);
+			if (e.isalive() && bounding.intersects(e.getBounding())) {
+				alive = false;
+			}
+		}
+		
 		bounding.x = (int) this.posx;
 		bounding.y = (int) this.posy;
 	}
@@ -85,14 +107,8 @@ public class Player {
 	}
 	
 	public BufferedImage getLook() {
-		return look;
-	}
-
-	public int getSpeed() {
-		return speed;
-	}
-
-	public void setSpeed(int speed) {
-		this.speed = speed;
+		if (alive) {
+			return look;
+		} else return look_dead;
 	}
 }
